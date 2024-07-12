@@ -14,7 +14,7 @@ const multer = require('multer');
 
 const sequelize = new Sequelize('database', 'username', 'password', {
     dialect: 'sqlite',
-    storage: '/Users/samblanton/Desktop/Node/database.db'
+    storage: './database.db'
 });
 
 
