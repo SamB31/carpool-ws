@@ -19,7 +19,7 @@ class WebSocketManager: ObservableObject {
     var websocketTask: URLSessionWebSocketTask?
 
     func connect() {
-        guard let url = URL(string: "ws://192.168.1.143:8080") else {
+        guard let url = URL(string: "ws://192.168.1.136:8080") else {
             print("Error: Cannot create URL")
             return
         }
