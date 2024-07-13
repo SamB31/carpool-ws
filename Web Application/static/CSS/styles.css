@@ -30,3 +30,8 @@ nav {
     margin-left: auto; /* Push to the right */
     padding: 0 10px; /* Add padding for easier click */
 }
+
+
+.selected {
+    background-color: #f0f8ff !important; /* Change to your preferred highlight color */
+}

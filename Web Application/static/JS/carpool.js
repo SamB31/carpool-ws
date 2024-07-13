@@ -1,4 +1,6 @@
-const socket = new WebSocket('ws://192.168.1.136:8080');
+const socket = new WebSocket('ws://localhost:8080');
+//const socket = new WebSocket('ws://192.168.1.136:8080');
+
 
 socket.onopen = () => {
     socket.send(JSON.stringify({ page: '1' })); 
@@ -37,15 +39,18 @@ function updateListWithNewCheckIn(data) {
     data.forEach(record => {
         const row = document.createElement('tr');
 
-        // Creating and appending a selector box with familyId as value
-        const selectorCell = document.createElement('td');
-        const selector = document.createElement('input');
-        selector.setAttribute('type', 'checkbox');
-        selector.setAttribute('name', 'checkedOutFamily');
-        selector.setAttribute('value', record.familyId);
-        selectorCell.appendChild(selector);
-        row.appendChild(selectorCell);
+        // Adding a click event listener to the row
+        row.addEventListener('click', function() {
+            // Toggle the 'table-warning' class to highlight the row
+            this.classList.toggle('table-warning');
+            // Toggle the 'selected' attribute to track the row
+            this.setAttribute('data-selected', this.getAttribute('data-selected') === 'true' ? 'false' : 'true');
+        });
 
+
+        // Adding a data attribute to store familyId
+        row.setAttribute('data-family-id', record.familyId);
+        
         // Creating and appending cells for other data
         const firstNameCell = document.createElement('td');
         firstNameCell.textContent = record.firstName;
@@ -56,8 +61,7 @@ function updateListWithNewCheckIn(data) {
         row.appendChild(lastNameCell);
 
         const arrivedAtCell = document.createElement('td');
-        arrivedAtCell.textContent = new Date(record.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/^0(?:0:)?/, '');;
-
+        arrivedAtCell.textContent = new Date(record.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/^0(?:0:)?/, '');
         row.appendChild(arrivedAtCell);
 
         // Append the row to the table body
@@ -66,11 +70,11 @@ function updateListWithNewCheckIn(data) {
 }
 
 document.getElementById('checkoutButton').addEventListener('click', function() {
-    const checkedInputs = document.querySelectorAll('input[name="checkedOutFamily"]:checked');
+    const selectedRows = document.querySelectorAll('tr[data-selected="true"]');
     // Create an array to hold all checked out family IDs
-    const checkedOutFamilyIds = Array.from(checkedInputs).map(input => input.value);
+    const checkedOutFamilyIds = Array.from(selectedRows).map(row => row.getAttribute('data-family-id'));
 
-    console.log(checkedOutFamilyIds); // This will log an array of all checked values
+    console.log(checkedOutFamilyIds); // This will log an array of all selected family IDs
 
     if (checkedOutFamilyIds.length > 0) {
         // Send this array to the server

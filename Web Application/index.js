@@ -211,6 +211,26 @@ const insertDataFromCsv = async (filePath) => {
 
 // #region HTTP server
 
+
+// #region AdminJS Setup
+async function setupAdminJS(app) {
+    const AdminJS = (await import('adminjs')).default;
+    const AdminJSExpress = await import('@adminjs/express');
+    const AdminJSSequelize = await import('@adminjs/sequelize');
+
+    AdminJS.registerAdapter(AdminJSSequelize);
+
+    const adminJs = new AdminJS({
+        databases: [sequelize],
+        rootPath: '/admin',
+    });
+
+    const adminRouter = AdminJSExpress.buildRouter(adminJs);
+    app.use(adminJs.options.rootPath, adminRouter);
+}
+// #endregion
+
+
 const app = express();
 
 // Serve static files (e.g., CSS, JavaScript, images) from a directory named 'public'
@@ -221,6 +241,7 @@ app.use(express.json());
 
 const upload = multer();
 
+setupAdminJS(app);
 
 app.get('/', (req, res) => {
     fs.readFile('templates/index.html', (err, data) => {
