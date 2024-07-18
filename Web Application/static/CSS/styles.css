@@ -2,6 +2,10 @@ nav {
     height: 40px;
 }
 
+tbody {
+    cursor: pointer;
+}
+
 .main-buttons{
     margin-top: 10px;
     display: flex;

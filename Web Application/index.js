@@ -85,7 +85,7 @@ async function formatmessage() {
     const allInLineRecords = await InLine.findAll({
         include: [{
             model: Family,
-            attributes: ['firstName', 'lastName', 'familyId']
+            attributes: ['id','firstName', 'lastName', 'familyId']
         }],
         order: [['createdAt', 'ASC']]
     });
@@ -98,6 +98,7 @@ async function formatmessage() {
         const familyData = inlineData.family ? inlineData.family.dataValues : {};
 
         return {
+            uniqueId: familyData.id,
             firstName: familyData.firstName,
             lastName: familyData.lastName,
             familyId: familyData.familyId,
@@ -337,14 +338,16 @@ app.post('/submit-check-in', upload.none(), async (req, res) => {
     }
 });
 
+
 app.post('/submit-check-out', upload.none(), async (req, res) => {
     try {
-        const { familyId } = req.body;
+        const { childIds } = req.body;
 
-        // Find all family members with the given familyId
+        // Find all specified family members
         const familyMembers = await Family.findAll({
-            where: { familyId: familyId }
+            where: { id: childIds }
         });
+
 
         if (familyMembers.length === 0) {
             return res.status(400).json({ success: false, message: 'No family members found for the provided family ID' });
@@ -354,7 +357,7 @@ app.post('/submit-check-out', upload.none(), async (req, res) => {
             include: [{
                 model: Family,
                 attributes: ['lastName'],
-                where: { familyId: familyId }
+                where: { id: childIds }
             }]
         });
 
@@ -364,8 +367,12 @@ app.post('/submit-check-out', upload.none(), async (req, res) => {
 
 
 
-        const lastName = familyMembers[0].dataValues.lastName;
-        // Remove each corresponding InLine record
+        // Get all unique last names
+        const lastNames = [...new Set(familyMembers.map(member => member.dataValues.lastName))];
+        
+        // Create a string with all last names
+        const lastNamesString = lastNames.join(", ");
+
         const removalPromises = familyMembers.map(member => 
             
             InLine.destroy({
@@ -383,7 +390,7 @@ app.post('/submit-check-out', upload.none(), async (req, res) => {
             broadcastMessage({ type: 'newCheckIn', data: formattedData });
         });
 
-        res.json({ success: true, message: `${lastName} family checked out successfully` });
+        res.json({ success: true, message: `${lastNamesString} families checked out successfully` });
     } catch (error) {
         console.error('Error during check-out:', error);
         res.json({ success: false, message: 'Error during check-out' });
