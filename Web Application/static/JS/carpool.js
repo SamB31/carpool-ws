@@ -10,6 +10,7 @@ socket.onopen = () => {
 socket.onmessage = function(event) {
     const message = JSON.parse(event.data);
     if (message.type === "initial") {
+        console.log(message.data)
         updateListWithNewCheckIn(message.data);
     }
     if (message.type === "endCarpool") {
@@ -49,7 +50,7 @@ function updateListWithNewCheckIn(data) {
 
 
         // Adding a data attribute to store familyId
-        row.setAttribute('data-family-id', record.familyId);
+        row.setAttribute('data-child-id', record.uniqueId);
         
         // Creating and appending cells for other data
         const firstNameCell = document.createElement('td');
@@ -72,7 +73,7 @@ function updateListWithNewCheckIn(data) {
 document.getElementById('checkoutButton').addEventListener('click', function() {
     const selectedRows = document.querySelectorAll('tr[data-selected="true"]');
     // Create an array to hold all checked out family IDs
-    const checkedOutFamilyIds = Array.from(selectedRows).map(row => row.getAttribute('data-family-id'));
+    const checkedOutFamilyIds = Array.from(selectedRows).map(row => row.getAttribute('data-child-id'));
 
     console.log(checkedOutFamilyIds); // This will log an array of all selected family IDs
 
@@ -114,7 +115,7 @@ function checkoutFamily(familyId) {
         headers: {
             'Content-Type': 'application/json'
           },
-        body: JSON.stringify({ 'familyId': familyId }),
+        body: JSON.stringify({ 'childIds': familyId }),
     })
     
     .then(response => response.json())
