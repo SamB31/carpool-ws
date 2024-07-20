@@ -1,6 +1,3 @@
-nav {
-    height: 40px;
-}
 
 tbody {
     cursor: pointer;
@@ -38,4 +35,49 @@ tbody {
 
 .selected {
     background-color: #f0f8ff !important; /* Change to your preferred highlight color */
+}
+
+:root {
+    --ca-gold: #C5B358;
+    --ca-black: #000000;
+    --ca-white: #FFFFFF;
+}
+.navbar {
+    background-color: var(--ca-black);
+    padding: 0;
+}
+.navbar-nav {
+    display: flex;
+    justify-content: center;
+}
+.navbar-brand {
+    padding: 0;
+    margin: 0;
+}
+.navbar-brand img {
+    height: 120px;
+    padding-bottom: 15px;
+}
+.main-buttons {
+    margin-top: 20px;
+}
+.btn-primary {
+    background-color: var(--ca-gold);
+    border-color: var(--ca-gold);
+    color: var(--ca-black);
+}
+.btn-primary:hover {
+    background-color: var(--ca-black);
+    border-color: var(--ca-gold);
+    color: var(--ca-gold);
+}
+.btn-secondary {
+    background-color: var(--ca-black);
+    border-color: var(--ca-gold);
+    color: var(--ca-gold);
+}
+.btn-secondary:hover {
+    background-color: var(--ca-gold);
+    border-color: var(--ca-black);
+    color: var(--ca-black);
 }
