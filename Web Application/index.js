@@ -12,12 +12,35 @@ const multer = require('multer');
 
 // #region ORM
 
-const sequelize = new Sequelize('database', 'username', 'password', {
-    dialect: 'sqlite',
-    storage: './database.db'
+// const sequelize = new Sequelize('database', 'username', 'password', {
+//     dialect: 'sqlite',
+//     storage: './database.db'
+// });
+
+const sequelize = new Sequelize('carpool', 'samb31', 'Asb2107!', {
+    host: 'localhost',
+    dialect: 'postgres',
+    port: 5432, // default PostgreSQL port
+    logging: false, // set to console.log to see the raw SQL queries
+    // Additional options
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
 });
 
 
+// Test the connection
+async function testConnection() {
+    try {
+      await sequelize.authenticate();
+      console.log('Connection has been established successfully.');
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+    }
+}
 
 // Define models
 const Family = sequelize.define('family', {
@@ -66,6 +89,8 @@ const Historical = sequelize.define('historical', {
 // Relationships
 InLine.belongsTo(Family, {foreignKey: 'familyId'});
 Historical.belongsTo(Family, {foreignKey: 'familyId'});
+
+testConnection();
 
 sequelize.sync();
 
