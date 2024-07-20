@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canton Academy</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ca-gold: #C5B358;
+            --ca-black: #000000;
+            --ca-white: #FFFFFF;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: var(--ca-black);
+            padding: 0;
+        }
+        .navbar-nav {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+        }
+        .navbar-brand {
+            padding: 0;
+        }
+        .navbar-brand img {
+            height: 80px;
+            width: auto;
+        }
+        .main-buttons {
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background-color: var(--ca-gold);
+            border-color: var(--ca-gold);
+            color: var(--ca-black);
+        }
+        .btn-primary:hover {
+            background-color: var(--ca-black);
+            border-color: var(--ca-gold);
+            color: var(--ca-gold);
+        }
+        .btn-secondary {
+            background-color: var(--ca-black);
+            border-color: var(--ca-gold);
+            color: var(--ca-gold);
+        }
+        .btn-secondary:hover {
+            background-color: var(--ca-gold);
+            border-color: var(--ca-black);
+            color: var(--ca-black);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container d-flex justify-content-center">
+            <a class="navbar-brand" href="#">
+                <img src="/img/cantonlogo.png" alt="Canton Academy Logo">
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Buttons -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#checkInModal">Check-in</button>
+            </div>
+            <div class="col-md-4">
+                <button id="checkoutButton" class="btn btn-secondary btn-block">Check-out</button>
+            </div>
+            <div class="col-md-4">
+                <button id="endButton" class="btn btn-secondary btn-block">End</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Check-in Modal -->
+    <div class="modal" id="checkInModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Check-in</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="checkInForm" action="/submit-check-in" method="post">
+                        <input type="text" name="familyId" class="form-control" placeholder="Enter Family ID">
+                        <button type="submit" class="btn btn-primary mt-3">Check-in</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/JS/carpool.js"></script>
+</body>
+</html>
