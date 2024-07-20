@@ -18,7 +18,7 @@ const multer = require('multer');
 // });
 
 const sequelize = new Sequelize('carpool', 'samb31', 'Asb2107!', {
-    host: 'localhost',
+    host: '192.168.1.136',
     dialect: 'postgres',
     port: 5432, // default PostgreSQL port
     logging: false, // set to console.log to see the raw SQL queries
