@@ -34,7 +34,7 @@ async function testDatabaseConnection() {
 // Call the test function
 testDatabaseConnection();
 
-sequelize.sync()
+
 
 app.use('/carpool', carpoolRoutes);
 app.use('/historical', historicalRoutes);
@@ -51,6 +51,6 @@ app.get('/carpool', (req, res) => {
     res.sendFile(path.join(__dirname, 'templates', 'carpool.html'));
 });
 
-
+sequelize.sync()
 
 module.exports = app;
