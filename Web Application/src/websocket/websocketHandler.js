@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const { formatMessage } = require('../services/carpoolService');
+const { historicalFormatMessage} = require('../services/historicalService.js')
 const { wsOptions, allowedEvents } = require('../config/websocket.js');
 
 class WebSocketHandler {
