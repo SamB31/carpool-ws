@@ -4,5 +4,5 @@ module.exports = {
         // You can add specific WebSocket server options here if needed
     },
     // Allowed events for broadcasting
-    allowedEvents: ['check-in', 'check-out', 'carpool-end', 'newCheckIn']
+    allowedEvents: ['check-in', 'check-out', 'carpool-end', 'newCheckIn', 'endCarpool']
 };

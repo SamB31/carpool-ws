@@ -1,8 +1,9 @@
 const Historical = require('../models/Historical');
 const Family = require('../models/Family');
-const InLine = require('../models/InLine');
 const fs = require('fs');
 const { writeDataToCSVFile } = require('../utils/csvHelper');
+const redisClient = require('../config/redis');
+const INLINE_KEY = 'carpool:inline';
 
 const historicalFormatMessage = async () => {
     const allHistoricalRecords = await Historical.findAll({
@@ -31,7 +32,8 @@ const endCarpool = async () => {
         await writeDataToCSVFile(historicalData);
 
         await Historical.destroy({ where: {} });
-        await InLine.destroy({ where: {} });
+
+        await redisClient.del(INLINE_KEY);
 
         return { success: true, status: 200, message: 'Carpool has ended' };
     } catch (error) {
