@@ -35,6 +35,8 @@ const endCarpool = async () => {
 
         await redisClient.del(INLINE_KEY);
 
+        await redisClient.set('lastStation', '0');
+
         return { success: true, status: 200, message: 'Carpool has ended' };
     } catch (error) {
         console.error('Error ending carpool:', error);
@@ -42,4 +44,12 @@ const endCarpool = async () => {
     }
 };
 
-module.exports = { historicalFormatMessage, endCarpool };
+// Helper function to get the next station number (unchanged)
+const getNextStation = async () => {
+    const lastStation = await redisClient.get('lastStation') || '0';
+    const nextStation = (parseInt(lastStation) % 4) + 1;
+    await redisClient.set('lastStation', nextStation.toString());
+    return nextStation;
+  };
+
+module.exports = { historicalFormatMessage, endCarpool, getNextStation };
