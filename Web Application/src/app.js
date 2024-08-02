@@ -21,6 +21,19 @@ setupAdminJS(app);
 
 //insertDataFromCsv('./family.csv')
 
+// Test the database connection
+async function testDatabaseConnection() {
+    try {
+        await sequelize.authenticate();
+        console.log('Connection to the database has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
+}
+
+// Call the test function
+testDatabaseConnection();
+
 app.use('/carpool', carpoolRoutes);
 app.use('/historical', historicalRoutes);
 
