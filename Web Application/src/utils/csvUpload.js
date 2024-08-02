@@ -40,9 +40,7 @@ const insertDataFromCsv = async (filePath) => {
         console.log('Data inserted successfully.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);
-    } finally {
-        await sequelize.close();
-    }
+    } 
 };
 
 module.exports = { insertDataFromCsv };
