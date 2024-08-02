@@ -5,6 +5,7 @@ const path = require('path');
 const carpoolRoutes = require('./routes/carpoolRoutes');
 const historicalRoutes = require('./routes/historicalRoutes');
 const WebSocketHandler = require('./websocket/websocketHandler');
+const { insertDataFromCsv } = require('./utils/csvUpload');
 const setupAdminJS = require('./models/admin');
 const { sequelize } = require('./config/database');
 
@@ -17,6 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 setupAdminJS(app);
+
+//insertDataFromCsv('./family.csv')
 
 app.use('/carpool', carpoolRoutes);
 app.use('/historical', historicalRoutes);

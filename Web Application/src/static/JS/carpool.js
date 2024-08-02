@@ -1,24 +1,59 @@
-//const socket = new WebSocket('ws://localhost:8080');
-const socket = new WebSocket('ws://localhost:8080');
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 4;
+
+function connect() {
+    //const socket = new WebSocket('ws://localhost:8080');
+    var socket = new WebSocket('ws://192.168.1.136:8080');
 
 
-socket.onopen = () => {
-    socket.send(JSON.stringify({ page: '1' })); 
-};
+
+    socket.onopen = () => {
+        reconnectAttempts = 0;
+        socket.send(JSON.stringify({ page: '1' })); 
+        hideBanner();
+    };
 
 
-socket.onmessage = function(event) {
-    const message = JSON.parse(event.data);
-    if (message['type'] === "initial") {
-        updateListWithNewCheckIn(message['data']);
+    socket.onmessage = function(event) {
+        const message = JSON.parse(event.data);
+        if (message['type'] === "initial") {
+            updateListWithNewCheckIn(message['data']);
+        }
+        if (message['type'] === "endCarpool") {
+            displayBanner('alert alert-success', message['data']);
+        }    
+        if (message['type'] === 'newCheckIn') {
+            updateListWithNewCheckIn(message['data']);
+        }
+    };
+
+    socket.onclose = () => {
+        displayBanner('alert alert-warning', 'Lost connection to server. Attempting to reconnect...');
+        attemptReconnect();
+    };
+
+    socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        socket.close(); // Close the connection if an error occurs
+    };
+
+}
+
+function attemptReconnect() {
+    if (reconnectAttempts < maxReconnectAttempts) {
+      reconnectAttempts += 1;
+      const reconnectDelay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000); // Exponential backoff, up to 30 seconds
+      setTimeout(() => {
+        console.log(`Attempting to reconnect... (${reconnectAttempts}/${maxReconnectAttempts})`);
+        connect();
+      }, reconnectDelay);
+    } else {
+      displayBanner('alert alert-danger', 'Unable to reconnect to server. Please refresh the page.');
     }
-    if (message['type'] === "endCarpool") {
-        displayBanner('alert alert-success', message['data']);
-    }    
-    if (message['type'] === 'newCheckIn') {
-        updateListWithNewCheckIn(message['data']);
-    }
-};
+}
+
+connect();
+
 
 document.getElementById('endButton').addEventListener('click', function() {
     if (confirm('Are you sure you want to end the carpool?')) {
@@ -58,6 +93,10 @@ function updateListWithNewCheckIn(data) {
         const lastNameCell = document.createElement('td');
         lastNameCell.textContent = record.lastName;
         row.appendChild(lastNameCell);
+
+        const stationCell = document.createElement('td');
+        stationCell.textContent = record.station;
+        row.appendChild(stationCell);
 
         const arrivedAtCell = document.createElement('td');
         arrivedAtCell.textContent = new Date(record.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/^0(?:0:)?/, '');
@@ -173,3 +212,10 @@ function displayBanner(type, message) {
     };
 
 }
+
+// Hide banner function
+function hideBanner() {
+    const banner = document.getElementById('banner');
+    banner.style.display = 'none';
+}
+
