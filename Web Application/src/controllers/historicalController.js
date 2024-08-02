@@ -17,6 +17,7 @@ const endCarpoolSession = async (req, res) => {
 
         if (response.success) {
             broadcastMessage('endCarpool', response.message);
+            broadcastMessage('newCheckIn', []);
         }
 
         res.status(response.status).json(response);
