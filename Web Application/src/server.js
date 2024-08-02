@@ -18,8 +18,8 @@ async function testDatabaseConnection() {
     }
 }
 
-// Call the test function
-
+const PORT = 80; // Make sure the port is correct
+const HOST = '0.0.0.0'; 
 app.listen(PORT, HOST, async () => {
     try {
         await testConnection();
