@@ -9,7 +9,7 @@ const server = http.createServer(app);
 WebSocketHandler.init(server);
 
 
-const PORT = 80; // Make sure the port is correct
+const PORT = 9000; // Make sure the port is correct
 const HOST = '0.0.0.0'; 
 app.listen(PORT, HOST, async () => {
     try {
