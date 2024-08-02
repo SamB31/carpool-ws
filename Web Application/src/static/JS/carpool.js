@@ -85,7 +85,7 @@ document.getElementById('checkoutButton').addEventListener('click', function() {
 
 
 function endcarpool() {
-    fetch('/submit-end', {
+    fetch('/historical/submit-end', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
