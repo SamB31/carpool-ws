@@ -3,7 +3,7 @@ const maxReconnectAttempts = 4;
 
 function connect() {
     //const socket = new WebSocket('ws://localhost:8080');
-    var socket = new WebSocket('ws://192.168.1.136:80');
+    var socket = new WebSocket('ws://192.168.1.136:9000');
 
 
 
