@@ -15,6 +15,7 @@ class WebSocketHandler {
             console.log('New client connected');
 
             ws.on('message', async (message) => {
+                
                 const clientMessage = JSON.parse(message);
 
                 if (clientMessage.page === '1') {

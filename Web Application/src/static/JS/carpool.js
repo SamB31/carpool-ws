@@ -2,8 +2,8 @@ let reconnectAttempts = 0;
 const maxReconnectAttempts = 4;
 
 function connect() {
-    //const socket = new WebSocket('ws://localhost:8080');
-    var socket = new WebSocket('ws://192.168.1.136:8080');
+    //var socket = new WebSocket('wss://test.quickpickup.org:443');
+    var socket = new WebSocket('wss://canton.quickpickup.org:443');
 
 
 
