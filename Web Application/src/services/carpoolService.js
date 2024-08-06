@@ -160,6 +160,92 @@ const checkIn = async (familyId) => {
     }
   };
 
+
+  const studentDelete = async (childIds) => {
+    try {
+      // Fetch family members from the database (as you still need their info)
+      const familyMembers = await Family.findAll({ where: { id: childIds } });
+  
+      if (familyMembers.length === 0) {
+        return {
+          success: false,
+          status: 400,
+          message: 'No family members found for the provided family ID',
+        };
+      }
+  
+      // Check if members are checked in using Redis
+      const checkedInMembers = [];
+      const notCheckedInMembers = [];
+  
+      await Promise.all(
+        familyMembers.map(async (member) => {
+          const memberData = await redisClient.hget(INLINE_KEY, member.id);
+          if (memberData) {
+            checkedInMembers.push(JSON.parse(memberData));
+          } else {
+            notCheckedInMembers.push(member);
+          }
+        })
+      );
+  
+      // Handle case where no members are checked in
+      if (checkedInMembers.length === 0) {
+        return {
+          success: false,
+          status: 400,
+          message: 'User not checked in',
+        };
+      }
+  
+      // Get last names of checked-in members
+      const lastNames = [...new Set(checkedInMembers.map((member) => member.lastName))];
+      const lastNamesString = lastNames.join(', ');
+  
+      // Remove members from Redis
+      await Promise.all(
+        checkedInMembers.map(async (member) => {
+          await redisClient.hdel(INLINE_KEY, member.id);
+        })
+      );
+  
+      // Format message using Redis data
+      const formattedData = await formatMessage();
+  
+      return {
+        success: true,
+        status: 200,
+        message: `${lastNamesString} families deleted successfully`,
+        data: formattedData,
+      };
+    } catch (error) {
+      console.error('Error during check-out:', error);
+      return {
+        success: false,
+        status: 500,
+        message: 'Internal server error',
+      };
+    }
+  };
+
+const searchByLastName = async (lastName) => {
+    try {
+      const families = await Family.findAll({
+        where: { lastName },
+        attributes: ['familyId', 'lastName', 'firstName'],
+        group: ['familyId'],
+      });
+
+      return {
+        success: true,
+        families: families.map(f => f.get({ plain: true })),
+      };
+    } catch (error) {
+      console.error('Error in searchByLastName service:', error);
+      return { success: false, message: 'Error searching for families' };
+    }
+}
+
 const formatMessage = async () => {
     try {
       // Fetch all inline records from Redis
@@ -186,4 +272,4 @@ const formatMessage = async () => {
     }
   };
 
-module.exports = { checkIn, checkOut, formatMessage };
+module.exports = { checkIn, checkOut, studentDelete, formatMessage, searchByLastName };

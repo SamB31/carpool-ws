@@ -112,8 +112,6 @@ document.getElementById('checkoutButton').addEventListener('click', function() {
     // Create an array to hold all checked out family IDs
     const checkedOutFamilyIds = Array.from(selectedRows).map(row => row.getAttribute('data-child-id'));
 
-    console.log(checkedOutFamilyIds); // This will log an array of all selected family IDs
-
     if (checkedOutFamilyIds.length > 0) {
         // Send this array to the server
         checkoutFamily(checkedOutFamilyIds);
@@ -122,6 +120,18 @@ document.getElementById('checkoutButton').addEventListener('click', function() {
     }
 });
 
+document.getElementById('deleteButton').addEventListener('click', function() {
+    const selectedRows = document.querySelectorAll('tr[data-selected="true"]');
+    // Create an array to hold all checked out family IDs
+    const deleteFamilyIds = Array.from(selectedRows).map(row => row.getAttribute('data-child-id'));
+
+    if (deleteFamilyIds.length > 0) {
+        // Send this array to the server
+        deleteFamily(deleteFamilyIds);
+    } else {
+        alert('Please select a family to check out.');
+    }
+});
 
 function endcarpool() {
     fetch('/historical/submit-end', {
@@ -169,34 +179,48 @@ function checkoutFamily(familyId) {
     });
 }
 
-
-document.getElementById('checkInForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const form = this;
-    const inputField = form.querySelector('input[name="familyId"]'); 
-
-    fetch('/carpool/submit-check-in', {
+function deleteFamily(familyId) {
+    
+    fetch('/carpool/submit-delete', {
         method: 'POST',
-        body: new FormData(this),
-        
+        headers: {
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify({ 'childIds': familyId }),
     })
+    
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             // Display success banner
             displayBanner('alert alert-success', data.message);
-            inputField.value = ''
         } else {
             displayBanner('alert alert-danger', data.message)
-            inputField.value = ''
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        displayBanner('error', 'Error during check-in');
     });
-});
+}
 
+document.getElementById('checkInForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const form = this;
+    const inputField = form.querySelector('input[name="familyId"]');
+    const input = inputField.value.trim();
+
+    if (input) {
+        if (isNaN(input)) {
+            // If input is not a number, treat it as a last name
+            searchByLastName(input);
+        } else {
+            // If input is a number, treat it as a family ID
+            checkInFamily(input);
+        }
+    } else {
+        displayBanner('alert alert-danger', 'Please enter a family ID or last name');
+    }
+});
 function displayBanner(type, message) {
     const banner = document.getElementById('banner');
     const bannerMessage = document.getElementById('bannerMessage');
@@ -219,3 +243,70 @@ function hideBanner() {
     banner.style.display = 'none';
 }
 
+function searchByLastName(lastName) {
+    fetch('/carpool/search-by-lastname', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ lastName: lastName }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.families.length === 1) {
+                // If only one family found, check them in directly
+                checkInFamily(data.families[0].familyId);
+            } else if (data.families.length > 1) {
+                // If multiple families found, display options
+                displayFamilyOptions(data.families);
+            } else {
+                displayBanner('alert alert-warning', 'No families found with that last name');
+            }
+        } else {
+            displayBanner('alert alert-danger', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        displayBanner('alert alert-danger', 'Error during last name search');
+    });
+}
+
+function displayFamilyOptions(families) {
+    const optionsContainer = document.getElementById('familyOptions');
+    optionsContainer.innerHTML = '';
+    
+    families.forEach(family => {
+        const button = document.createElement('button');
+        button.textContent = `${family.lastName}, ${family.firstName} (ID: ${family.familyId})`;
+        button.classList.add('btn', 'btn-secondary', 'm-1');
+        button.onclick = () => checkInFamily(family.familyId);
+        optionsContainer.appendChild(button);
+    });
+
+    optionsContainer.style.display = 'block';
+}
+
+function checkInFamily(familyId) {
+    fetch('/carpool/submit-check-in', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ familyId: familyId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            displayBanner('alert alert-success', data.message);
+            document.querySelector('input[name="familyId"]').value = '';
+        } else {
+            displayBanner('alert alert-danger', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        displayBanner('alert alert-danger', 'Error during check-in');
+    });
+}

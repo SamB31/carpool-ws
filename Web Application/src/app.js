@@ -19,7 +19,7 @@ app.use(express.json());
 
 setupAdminJS(app);
 
-insertDataFromCsv('./family.csv')
+//insertDataFromCsv('./family.csv')
 
 // Test the database connection
 async function testDatabaseConnection() {
