@@ -52,13 +52,12 @@ app.get('/carpool', (req, res) => {
     res.sendFile(path.join(__dirname, 'templates', 'carpool.html'));
 });
 
-// Force sync with database
-sequelize.sync({ force: true }).then(() => {
-    console.log('Database & tables created!');
+sequelize.sync({ force: false }).then(() => {
+    console.log('Database synced');
 }).catch(err => {
     console.error('Error syncing database:', err);
 });
 
-//insertDataFromCsv('./family.csv')
+insertDataFromCsv('./family.csv')
 
 module.exports = app;
