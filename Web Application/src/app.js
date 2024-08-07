@@ -58,6 +58,6 @@ sequelize.sync({ force: false }).then(() => {
     console.error('Error syncing database:', err);
 });
 
-insertDataFromCsv('./family.csv')
+//insertDataFromCsv('./family.csv')
 
 module.exports = app;
