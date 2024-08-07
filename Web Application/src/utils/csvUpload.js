@@ -10,7 +10,15 @@ const readCsvFile = (filePath) => {
     return new Promise((resolve, reject) => {
         fs.createReadStream(filePath)
             .pipe(csv())
-            .on('data', (data) => results.push(data))
+            .on('data', (data) => {
+                const trimmedData = {};
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        trimmedData[key] = data[key].trim();
+                    }
+                }
+                results.push(trimmedData);
+            })
             .on('end', () => {
                 resolve(results);
             })
