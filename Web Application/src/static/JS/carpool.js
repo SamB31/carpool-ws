@@ -63,6 +63,7 @@ document.getElementById('endButton').addEventListener('click', function() {
 });
 
 function updateListWithNewCheckIn(data) {
+    console.log(data)
     // Find the table body in your HTML
     const tableBody = document.querySelector('.table tbody');
 
@@ -84,6 +85,11 @@ function updateListWithNewCheckIn(data) {
 
         // Adding a data attribute to store familyId
         row.setAttribute('data-child-id', record.uniqueId);
+
+        // Creating and appending cells for other data
+        const gradeNameCell = document.createElement('td');
+        gradeNameCell.textContent = record.grade;
+        row.appendChild(gradeNameCell);
         
         // Creating and appending cells for other data
         const firstNameCell = document.createElement('td');

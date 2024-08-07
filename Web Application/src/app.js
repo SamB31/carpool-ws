@@ -8,6 +8,7 @@ const WebSocketHandler = require('./websocket/websocketHandler');
 const { insertDataFromCsv } = require('./utils/csvUpload');
 const setupAdminJS = require('./models/admin');
 const { sequelize } = require('./config/database');
+const { resetAfterSchoolCareStatus } = require('./utils/resetASC')
 
 
 const app = express();
@@ -19,7 +20,7 @@ app.use(express.json());
 
 setupAdminJS(app);
 
-//insertDataFromCsv('./family.csv')
+insertDataFromCsv('./family.csv')
 
 // Test the database connection
 async function testDatabaseConnection() {
@@ -38,6 +39,8 @@ testDatabaseConnection();
 
 app.use('/carpool', carpoolRoutes);
 app.use('/historical', historicalRoutes);
+app.use('/reset', resetAfterSchoolCareStatus)
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'templates', 'index.html'));
