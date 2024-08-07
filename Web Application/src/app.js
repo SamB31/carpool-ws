@@ -20,8 +20,6 @@ app.use(express.json());
 
 setupAdminJS(app);
 
-insertDataFromCsv('./family.csv')
-
 // Test the database connection
 async function testDatabaseConnection() {
     try {
@@ -55,5 +53,7 @@ app.get('/carpool', (req, res) => {
 });
 
 sequelize.sync()
+
+insertDataFromCsv('./family.csv')
 
 module.exports = app;
