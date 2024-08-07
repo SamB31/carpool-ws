@@ -9,6 +9,11 @@ const Family = sequelize.define('family', {
     },
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
+    grade: DataTypes.STRING,
+    inAfterSchoolCare: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
     familyId: DataTypes.INTEGER,
 });
 

@@ -81,3 +81,39 @@ tbody {
     border-color: var(--ca-black);
     color: var(--ca-black);
 }
+
+/* Custom color classes for each grade */
+.gK3-color { background-color: #FFEB84; } /* Pastel Yellow */
+.gK4-color { background-color: #B399D4; } /* Lavender Purple */
+.gK5-color { background-color: #A3D8FF; } /* Sky Blue */
+.g2-color { background-color: #FFCC99; } /* Peach Orange */
+.g1-color { background-color: #B9E4C9; } /* Pale Mint Green */
+.g3-color { background-color: #F7A8A8; } /* Blush Red */
+.g4-color { background-color: #c7c7c7; } /* Light Pink */
+.g5-color { background-color: #D2B48C; } /* Tan Brown */
+
+.legend-item {
+    display: flex;
+    margin-right: 20px;
+    width: fit-content;
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grade-text {
+    font-weight: bold;
+}
+
+.legend {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
