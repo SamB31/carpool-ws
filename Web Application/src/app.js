@@ -54,6 +54,6 @@ app.get('/carpool', (req, res) => {
 
 sequelize.sync()
 
-insertDataFromCsv('./family.csv')
+//insertDataFromCsv('./family.csv')
 
 module.exports = app;
